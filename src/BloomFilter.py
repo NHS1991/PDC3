@@ -72,7 +72,7 @@ def insertData():
             db.session.execute(CQLString)
     db.close()
 
-def write_bloom_filter():
+def init_bloom_filter():
     bloom = BloomFilter(100000000,0.1,None)
     with open('../donnees/temp.csv', 'r') as csvfile:
         reader = csv.reader(csvfile.read().splitlines())
@@ -81,9 +81,10 @@ def write_bloom_filter():
             print row_str
             bloom.add(row_str)
             bloom.exist(row_str)
+        write_bloom_filter(bloom)
+
+def write_bloom_filter(bloom):
     with open("bloom","wb+") as bloom_file:
-        print bloom.getSize()
-        print len(bloom.bitArray)
         bloom.bitArray.tofile(bloom_file)
 
 def read_bloom_filter():
@@ -93,8 +94,9 @@ def read_bloom_filter():
 
 if __name__ == '__main__':
     # insertData()
-    # write_bloom_filter()
+    # init_bloom_filter()
     bloom = read_bloom_filter()
+    print bloom.nb_hash
     print len(bloom.bitArray)
     # with open('../donnees/temp.csv', 'r') as csvfile:
     #     reader = csv.reader(csvfile.read().splitlines())
